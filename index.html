@@ -62,7 +62,7 @@ const $ = s => document.querySelector(s);
 const ls = { get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v;}catch(_){return d;}}, set:(k,v)=>{try{localStorage.setItem(k,v);}catch(_){}} };
 const st = { token:"", me:null, desk:"Registration", station:"", stream:null, timer:null, last:"", lastAt:0, queue:[], busy:false, n:0, audio:null, detector:null, wake:null };
 
-$("#code").value = ls.get("sc-code",""); $("#desk").value = ls.get("sc-desk","Registration"); $("#station").value = ls.get("sc-station","");
+try{localStorage.removeItem("sc-code");}catch(_){} $("#desk").value = ls.get("sc-desk","Registration"); $("#station").value = ls.get("sc-station","");
 
 async function api(action, payload){
   const res = await fetch(API, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify({ token: st.token, action, payload: payload || {} }) });
@@ -78,9 +78,9 @@ $("#form").addEventListener("submit", async e => {
   try {
     const r = await api("whoami");
     st.me = r.me;
-    const allowed = { Registration:["EC","REG"], Socials:["EC","SOCIALS"] }[st.desk];
+    const allowed = { Registration:["EC","REG","REGTEAM"], Socials:["EC","SOCIALS"] }[st.desk];
     if (allowed.indexOf(st.me.role) < 0) throw new Error("Your role (" + st.me.roleLabel + ") can't check people in at the " + st.desk + " desk.");
-    ls.set("sc-code", st.token); ls.set("sc-desk", st.desk); ls.set("sc-station", st.station);
+    ls.set("sc-desk", st.desk); ls.set("sc-station", st.station);
     await startCamera();
   } catch (err) { $("#err").textContent = err.message || "Could not start."; }
   $("#go").disabled = false;
