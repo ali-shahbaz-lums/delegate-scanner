@@ -78,7 +78,7 @@ $("#form").addEventListener("submit", async e => {
   try {
     const r = await api("whoami");
     st.me = r.me;
-    const allowed = { Registration:["EC","REG","REGTEAM"], Socials:["EC","SOCIALS"] }[st.desk];
+    const allowed = { Registration:["EC","REG","REGTEAM"], Socials:["EC","SOCIALS","REGTEAM"] }[st.desk];
     if (allowed.indexOf(st.me.role) < 0) throw new Error("Your role (" + st.me.roleLabel + ") can't check people in at the " + st.desk + " desk.");
     ls.set("sc-desk", st.desk); ls.set("sc-station", st.station);
     await startCamera();
